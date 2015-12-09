@@ -5,6 +5,8 @@ __pycache__/
 # C extensions
 *.so
 
+*.brainstorming.txt
+
 # Distribution / packaging
 .Python
 env/
