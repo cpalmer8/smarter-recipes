@@ -32,6 +32,7 @@ def get_ingredients(url):
 #gets a list of the 'first' 10 urls, corresponding to updated blog posts
 #past 10 = older posts on different parts of the page
 #ideally this would not be managed with a nested loop
+#also needs socket improvement/parallelization per cProfile analysis
 def get_urls():
     html = urllib.urlopen('http://budgetbytes.com').read()
     soup = BeautifulSoup(html)
@@ -66,6 +67,5 @@ def open_recipes():
     insert_data(final_data)
 
 
-open_recipes()
 
 
