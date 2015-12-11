@@ -1,11 +1,14 @@
 from bs4 import BeautifulSoup
 import urllib
 import re
+import couchdb
 
+#budget bytes recipes come with dollar amounts, we want to remove those
 def transform_ingredient(ingredient):
     ingredient = re.sub(r'[\$][0-9]*\.[0-9]*', "", ingredient)
     return ingredient
 
+#fix encoding so unicode fractions won't break the script
 def fix_encoding(item):
     maxord = max(ord(char) for char in item)
     if maxord < 128:
@@ -14,6 +17,7 @@ def fix_encoding(item):
         newtext = item.encode('utf-8', 'replace')
         return newtext
 
+#get array of ingredients from each url
 def get_ingredients(url):
     html = urllib.urlopen(url).read()
     recipe = BeautifulSoup(html)
@@ -25,6 +29,9 @@ def get_ingredients(url):
         ingredients_list.append(item)
     return ingredients_list
 
+#gets a list of the 'first' 10 urls, corresponding to updated blog posts
+#past 10 = older posts on different parts of the page
+#ideally this would not be managed with a nested loop
 def get_urls():
     html = urllib.urlopen('http://budgetbytes.com').read()
     soup = BeautifulSoup(html)
@@ -39,13 +46,24 @@ def get_urls():
             recipe_urls.append(a["href"])
     return recipe_urls
 
+#inserting data into couchdb
+#note: this is an early prototype
+#for this to work we'd need to map/reduce on docs by "day"/chunk of 10
+def insert_data(final_data):
+    server = couchdb.Server()
+    db = server['recipe_ingredients']
+    doc = final_data
+    db.save(doc)
+
+#gets recipes & ingredients, puts them in a dict
 def open_recipes():
     recipe_urls = get_urls()
     final_data = {}
     for url in recipe_urls:
         recipe_ingredients = get_ingredients(url)
-        final_data[url] = recipe_ingredients
-    print final_data
+        if (recipe_ingredients):
+            final_data[url] = recipe_ingredients
+    insert_data(final_data)
 
 
 open_recipes()
