@@ -1,0 +1,6 @@
+budget_bytes:
+    url: 'http://budgetbytes.com'
+    link_selector: 'h2'
+    link_class: 'entry-title'
+    ingredient_selector: 'li'
+    ingredient_class: 'ingredient'
