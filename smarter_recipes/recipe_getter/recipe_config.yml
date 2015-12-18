@@ -4,3 +4,10 @@ budget_bytes:
     link_class: 'entry-title'
     ingredient_selector: 'li'
     ingredient_class: 'ingredient'
+
+red_bowls:
+    url: 'http://tworedbowls.com'
+    link_selector: 'h1'
+    link_class: 'entry-title'
+    ingredient_selector: 'li'
+    ingredient_class: 'ingredient'
